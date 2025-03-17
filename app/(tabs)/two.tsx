@@ -1,12 +1,13 @@
 import { StyleSheet } from 'react-native'
 
 import EditScreenInfo from '@/components/EditScreenInfo'
-import { Text, View } from '@/components/Themed'
+import { View } from '@/components/Themed'
+import { Text } from '@/components/ui/text'
 
 export default function TabTwoScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab Two</Text>
+      <Text className="text-[20px] font-bold">Tab Two</Text>
       <View
         style={styles.separator}
         lightColor="#eee"
@@ -22,10 +23,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
   },
   separator: {
     marginVertical: 30,

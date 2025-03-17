@@ -24,6 +24,7 @@ export default [
     rules: {
       'prettier/prettier': 'error',
       semi: ['error', 'never'],
+      '@typescript-eslint/no-require-imports': 'off',
     },
   },
 ]

@@ -13,6 +13,9 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "global.d.ts",
-    "tailwind.config.ts"
+    "tailwind.config.js",
+    "metro.config.js",
+    "babel.config.js",
+    "nativewind-env.d.ts"
   ]
 }

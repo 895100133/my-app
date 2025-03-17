@@ -3,19 +3,14 @@ import { StyleSheet } from 'react-native'
 
 import { ExternalLink } from './ExternalLink'
 import { MonoText } from './StyledText'
-import { Text, View } from './Themed'
-
-import Colors from '@/constants/Colors'
+import { View } from './Themed'
+import { Text } from '@/components/ui/text'
 
 export default function EditScreenInfo({ path }: { path: string }) {
   return (
     <View>
       <View style={styles.getStartedContainer}>
-        <Text
-          style={styles.getStartedText}
-          lightColor="rgba(0,0,0,0.8)"
-          darkColor="rgba(255,255,255,0.8)"
-        >
+        <Text className="text-[17px] leading-[24px] text-center">
           Open up the code for this screen:
         </Text>
 
@@ -27,11 +22,7 @@ export default function EditScreenInfo({ path }: { path: string }) {
           <MonoText>{path}</MonoText>
         </View>
 
-        <Text
-          style={styles.getStartedText}
-          lightColor="rgba(0,0,0,0.8)"
-          darkColor="rgba(255,255,255,0.8)"
-        >
+        <Text className="text-[17px] leading-[24px] text-center">
           Change any of the text, save the file, and your app will automatically
           update.
         </Text>
@@ -42,7 +33,7 @@ export default function EditScreenInfo({ path }: { path: string }) {
           style={styles.helpLink}
           href="https://docs.expo.io/get-started/create-a-new-app/#opening-the-app-on-your-phonetablet"
         >
-          <Text style={styles.helpLinkText} lightColor={Colors.light.tint}>
+          <Text className="text-center">
             Tap here if your app doesn't automatically update after making
             changes
           </Text>
