@@ -1,7 +1,7 @@
 import React from 'react'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { Link, Tabs } from 'expo-router'
-import { Pressable } from 'react-native'
+import { Pressable, TouchableOpacity } from 'react-native'
 
 import Colors from '@/constants/Colors'
 import { useColorScheme } from '@/lib/useColorScheme'
@@ -25,6 +25,52 @@ export default function TabLayout() {
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
+        headerStyle: {
+          backgroundColor: '#f4511e',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+        // 自定义tabBarButton，使用TouchableOpacity替代默认的Pressable，移除涟漪效果
+        tabBarButton: (props) => {
+          // 从props中提取需要的属性，忽略不兼容的属性
+          const {
+            children,
+            style,
+            onPress,
+            onPressIn,
+            onPressOut,
+            onLongPress,
+            accessibilityRole,
+            accessibilityState,
+            accessibilityLabel,
+            disabled,
+          } = props
+
+          // 处理事件处理函数的null值
+          const handlePress = onPress === null ? undefined : onPress
+          const handlePressIn = onPressIn === null ? undefined : onPressIn
+          const handlePressOut = onPressOut === null ? undefined : onPressOut
+          const handleLongPress = onLongPress === null ? undefined : onLongPress
+
+          return (
+            <TouchableOpacity
+              style={style}
+              onPress={handlePress}
+              onPressIn={handlePressIn}
+              onPressOut={handlePressOut}
+              onLongPress={handleLongPress}
+              activeOpacity={1}
+              accessibilityRole={accessibilityRole}
+              accessibilityState={accessibilityState}
+              accessibilityLabel={accessibilityLabel}
+              disabled={disabled === null ? undefined : disabled}
+            >
+              {children}
+            </TouchableOpacity>
+          )
+        },
       }}
     >
       <Tabs.Screen
