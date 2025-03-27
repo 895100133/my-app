@@ -1,7 +1,13 @@
-import { ScrollView, Image, TouchableOpacity } from 'react-native'
+import {
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native'
 import { View } from '@/components/Themed'
 import { Text } from '@/components/ui/text'
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons'
+import { useHotProducts } from '@/lib/api'
 
 // 商品分类数据
 const categories = [
@@ -13,7 +19,7 @@ const categories = [
 ]
 
 // 商品数据
-const products = [
+const localProducts = [
   {
     id: 1,
     title: '【未知品牌】保和丸*10丸/盒×120盒/件*五和中药饮片',
@@ -33,6 +39,23 @@ const products = [
     manufacturer: '德州德药制药有限公司',
   },
 ]
+
+// 添加平台配置接口类型定义
+interface PlatformProduct {
+  id: number | string
+  title?: string
+  name?: string
+  price?: string | number
+  image?: string
+  expiry?: string
+  manufacturer?: string
+  [key: string]: unknown
+}
+
+interface PlatformConfig {
+  products?: PlatformProduct[]
+  [key: string]: unknown
+}
 
 // 分类图标组件
 const CategoryIcon = ({
@@ -69,10 +92,10 @@ const ProductCard = ({
   manufacturer,
 }: {
   title: string
-  price: string
+  price: string | number
   image: string
-  expiry: string
-  manufacturer: string
+  expiry?: string
+  manufacturer?: string
 }) => (
   <View className="w-[48%] mb-3 bg-white rounded-lg overflow-hidden">
     <Image
@@ -84,8 +107,10 @@ const ProductCard = ({
       <Text className="text-sm font-medium mb-3" numberOfLines={2}>
         {title}
       </Text>
-      <Text className="text-xs text-gray-400 mb-1">{expiry}</Text>
-      <Text className="text-xs text-gray-400 mb-3">{manufacturer}</Text>
+      {expiry && <Text className="text-xs text-gray-400 mb-1">{expiry}</Text>}
+      {manufacturer && (
+        <Text className="text-xs text-gray-400 mb-3">{manufacturer}</Text>
+      )}
       <View className="flex-row justify-between items-center">
         <View className="flex-row items-center">
           <Text className="text-sm text-[#FF4D00] font-bold">¥</Text>
@@ -98,6 +123,77 @@ const ProductCard = ({
     </View>
   </View>
 )
+
+// API数据展示区域
+const ApiProductsSection = () => {
+  const { data, isLoading, error } = useHotProducts()
+
+  // 处理API数据，适应实际返回结构
+  const platformConfig = (data || {}) as PlatformConfig
+  const products = platformConfig.products || []
+
+  if (isLoading) {
+    return (
+      <View className="py-10 items-center justify-center">
+        <ActivityIndicator size="large" color="#FF4D00" />
+        <Text className="mt-4 text-center text-gray-500">
+          正在从 https://b2b-test.shanshu.work/b2b-config 加载数据...
+        </Text>
+      </View>
+    )
+  }
+
+  if (error) {
+    return (
+      <View className="py-10 items-center justify-center">
+        <MaterialIcons name="error-outline" size={48} color="#FF4D00" />
+        <Text className="mt-4 text-center text-red-500">
+          加载失败: {(error as Error).message}
+        </Text>
+        <Text className="mt-2 text-center text-gray-500">
+          API地址: /api/v1/no-auth/platform-config
+        </Text>
+      </View>
+    )
+  }
+
+  if (!products || products.length === 0) {
+    return (
+      <View className="py-10 items-center justify-center">
+        <Text className="text-center text-gray-500">暂无平台配置数据</Text>
+        <Text className="mt-2 text-center text-gray-500">
+          API地址: /api/v1/no-auth/platform-config
+        </Text>
+      </View>
+    )
+  }
+
+  return (
+    <View className="mb-6">
+      <View className="flex-row justify-between items-center mb-4">
+        <Text className="text-lg font-bold">平台配置数据</Text>
+        <TouchableOpacity>
+          <Text className="text-[#FF4D00]">查看更多</Text>
+        </TouchableOpacity>
+      </View>
+      <View className="flex-row flex-wrap justify-between">
+        {products.map((product: PlatformProduct) => (
+          <ProductCard
+            key={product.id}
+            title={product.title || product.name || '未命名产品'}
+            price={product.price || '0.00'}
+            image={product.image || 'https://via.placeholder.com/350'}
+            expiry={product.expiry}
+            manufacturer={product.manufacturer}
+          />
+        ))}
+      </View>
+      <Text className="text-center text-gray-400 text-xs mt-2">
+        数据来源: /api/v1/no-auth/platform-config
+      </Text>
+    </View>
+  )
+}
 
 export default function HomeScreen() {
   return (
@@ -152,6 +248,11 @@ export default function HomeScreen() {
         </View>
       </View>
 
+      {/* API 数据展示区域 */}
+      <View className="px-4">
+        <ApiProductsSection />
+      </View>
+
       {/* 促销横幅 */}
       <View className="mx-4 mb-4">
         <Image
@@ -163,10 +264,16 @@ export default function HomeScreen() {
         />
       </View>
 
-      {/* 商品列表 */}
+      {/* 本地商品列表 */}
       <View className="px-4 mb-4">
+        <View className="flex-row justify-between items-center mb-4">
+          <Text className="text-lg font-bold">本地静态商品</Text>
+          <TouchableOpacity>
+            <Text className="text-[#FF4D00]">查看更多</Text>
+          </TouchableOpacity>
+        </View>
         <View className="flex-row flex-wrap justify-between">
-          {products.map((product) => (
+          {localProducts.map((product) => (
             <ProductCard
               key={product.id}
               title={product.title}

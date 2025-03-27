@@ -18,6 +18,19 @@ import { Platform } from 'react-native'
 import { NAV_THEME } from '@/lib/constants'
 import { useColorScheme } from '@/lib/useColorScheme'
 import { PortalHost } from '@rn-primitives/portal'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+// 创建QueryClient实例
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 数据保鲜时间5分钟
+      gcTime: 10 * 60 * 1000, // 垃圾回收时间10分钟（旧版本叫cacheTime）
+      retry: 1, // 请求失败时最多重试1次
+      refetchOnWindowFocus: false, // 窗口聚焦时不重新获取数据
+    },
+  },
+})
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -34,7 +47,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: 'tabs',
+  initialRouteName: '(tabs)',
 }
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -86,24 +99,26 @@ function RootLayoutNav() {
   }
 
   return (
-    <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
-      <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: '#f4511e',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-        }}
-      >
-        <Stack.Screen name="tabs" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'card' }} />
-      </Stack>
-      <PortalHost />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+        <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
+        <Stack
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: '#f4511e',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
+        >
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: 'card' }} />
+        </Stack>
+        <PortalHost />
+      </ThemeProvider>
+    </QueryClientProvider>
   )
 }
 
