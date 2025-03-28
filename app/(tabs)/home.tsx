@@ -9,6 +9,9 @@ import { Text } from '@/components/ui/text'
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons'
 import { useHotProducts } from '@/lib/api'
 
+// 本地图片引用
+const localImage = require('@/assets/images/ceshi.jpg')
+
 // 商品分类数据
 const categories = [
   { icon: 'pills', type: 'fontawesome', label: '饮片专区1' },
@@ -24,8 +27,7 @@ const localProducts = [
     id: 1,
     title: '【未知品牌】保和丸*10丸/盒×120盒/件*五和中药饮片',
     price: '6.**',
-    image:
-      'https://img.alicdn.com/imgextra/i1/O1CN01K2D8R71O7xOHeJAkU_!!6000000001661-0-tps-350-350.jpg',
+    image: localImage,
     expiry: '有效期至：2027-12-16',
     manufacturer: '山西振东五和堂制药有限公司',
   },
@@ -33,8 +35,7 @@ const localProducts = [
     id: 2,
     title: '【6542针】硝苯地平缓释片（Ⅰ）*10mg×72片*德药',
     price: '2*.**',
-    image:
-      'https://img.alicdn.com/imgextra/i2/O1CN01NRSQjV1VF0XGUwLME_!!6000000002624-0-tps-350-350.jpg',
+    image: localImage,
     expiry: '有效期至：2026-12-01',
     manufacturer: '德州德药制药有限公司',
   },
@@ -93,13 +94,13 @@ const ProductCard = ({
 }: {
   title: string
   price: string | number
-  image: string
+  image: number | string // 支持require导入的本地图片（number类型）和远程图片URL（string类型）
   expiry?: string
   manufacturer?: string
 }) => (
   <View className="w-[48%] mb-3 bg-white rounded-lg overflow-hidden">
     <Image
-      source={{ uri: image }}
+      source={typeof image === 'string' ? { uri: image } : image}
       className="w-full h-40"
       resizeMode="contain"
     />
@@ -218,13 +219,7 @@ export default function HomeScreen() {
 
       {/* 轮播图 */}
       <View>
-        <Image
-          source={{
-            uri: 'https://img.alicdn.com/imgextra/i2/O1CN01j9MhYG29z9nZjPJR0_!!6000000008131-0-tps-750-400.jpg',
-          }}
-          className="w-full h-44"
-          resizeMode="cover"
-        />
+        <Image source={localImage} className="w-full h-44" resizeMode="cover" />
         <View className="absolute bottom-2 w-full flex-row justify-center">
           <View className="flex-row bg-black/30 rounded-full px-2 py-1">
             <View className="w-2 h-2 rounded-full bg-white mr-1" />
@@ -256,9 +251,7 @@ export default function HomeScreen() {
       {/* 促销横幅 */}
       <View className="mx-4 mb-4">
         <Image
-          source={{
-            uri: 'https://gw.alicdn.com/imgextra/i3/O1CN01iZTaxL1vhQoOLhN3c_!!6000000006205-0-tps-1125-320.jpg',
-          }}
+          source={localImage}
           className="w-full h-28 rounded-lg"
           resizeMode="cover"
         />

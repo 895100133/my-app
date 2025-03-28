@@ -26,7 +26,7 @@ export default function TabLayout() {
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
         headerStyle: {
-          backgroundColor: '#f4511e',
+          backgroundColor: '#FF4D00',
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -81,9 +81,19 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="quick-order"
+        options={{
+          title: '快速下单',
+          headerTitle: '快速下单',
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="shopping-cart" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="index"
         options={{
-          title: '个人中心',
+          title: '我的',
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
           headerRight: () => (
             <Link href="/modal" asChild>
@@ -99,13 +109,6 @@ export default function TabLayout() {
               </Pressable>
             </Link>
           ),
-        }}
-      />
-      <Tabs.Screen
-        name="two"
-        options={{
-          title: '分类',
-          tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
         }}
       />
     </Tabs>
