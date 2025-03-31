@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Platform } from 'react-native'
+import Constants from 'expo-constants'
 
 // 开发环境标志
 const isDevelopment = process.env.NODE_ENV === 'development' || __DEV__
@@ -7,21 +8,15 @@ const isDevelopment = process.env.NODE_ENV === 'development' || __DEV__
 // 检测是否为Android模拟器
 const isAndroidEmulator = Platform.OS === 'android' && isDevelopment
 
-// 根据环境选择baseURL
-// 在Android模拟器上需要使用10.0.2.2或172.17.0.1来访问宿主机
-// 10.0.2.2是Android模拟器中访问宿主机localhost的专用IP
-let API_URL = 'https://b2b-test.shanshu.work'
+// 从 app.config.ts 获取环境配置
+const envConfig = Constants.expoConfig?.extra?.envConfig
+const currentEnv = process.env.NODE_ENV || 'development'
+let API_URL = envConfig?.[currentEnv]?.apiUrl || ''
 
-if (isDevelopment) {
-  if (isAndroidEmulator) {
-    // Android模拟器使用10.0.2.2访问宿主机
-    // 假设Metro服务器运行在8081端口
-    API_URL = 'http://10.0.2.2:8081/b2b-config'
-    console.log('检测到Android模拟器环境，使用地址:', API_URL)
-  } else {
-    // 其他开发环境
-    API_URL = '' // 使用空字符串作为基础URL
-  }
+if (isDevelopment && isAndroidEmulator) {
+  // Android模拟器使用10.0.2.2访问宿主机
+  API_URL = 'http://10.0.2.2:8081/b2b-config'
+  console.log('检测到Android模拟器环境，使用地址:', API_URL)
 }
 
 // 创建axios实例
