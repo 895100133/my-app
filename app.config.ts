@@ -19,12 +19,12 @@ const envConfig = {
 }
 
 const config: ExpoConfig = {
-  name: 'my-app',
-  slug: 'my-app',
+  name: 'b2b-app',
+  slug: 'b2b-app',
   version: '1.0.0',
   orientation: 'portrait',
   icon: './assets/images/icon.png',
-  scheme: 'myapp',
+  scheme: 'b2bapp',
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   sdkVersion: '52.0.0',
@@ -59,7 +59,8 @@ const config: ExpoConfig = {
       origin: false,
     },
     eas: {
-      projectId: 'cbb34883-421a-442b-a970-44ac11ac6158',
+      owner: 'mayongliang',
+      projectId: '46b4082f-076f-46fa-be32-dd72c0ded65d',
     },
     // 添加API配置
     apiConfig: envConfig[currentEnv],

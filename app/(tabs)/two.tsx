@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
   StyleSheet,
   View,
@@ -9,6 +9,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { FontAwesome } from '@expo/vector-icons'
 import { Text } from '@/components/ui/text'
+import { useAuthStore } from '@/lib/store/useAuthStore'
 
 interface OrderStatus {
   icon: 'credit-card' | 'cube' | 'truck' | 'comment' | 'refresh'
@@ -38,7 +39,7 @@ interface HelpCenter {
 }
 
 export default function ProfileScreen() {
-  const [isLoggedIn] = useState(false) // 这里可以替换为真实的登录状态
+  const { isLoggedIn, user } = useAuthStore()
 
   const orderStatuses: OrderStatus[] = [
     { icon: 'credit-card', label: '待付款', count: 15 },
@@ -71,18 +72,18 @@ export default function ProfileScreen() {
       <View style={styles.userInfo}>
         <Image
           source={
-            isLoggedIn
-              ? require('../../assets/images/icon.png')
+            isLoggedIn && user?.avatar
+              ? { uri: user.avatar }
               : require('../../assets/images/icon.png')
           }
           style={styles.avatar}
         />
         <View style={styles.userMeta}>
           <Text style={styles.userName}>
-            {isLoggedIn ? '王恩龙' : '未登录'}
+            {isLoggedIn && user ? user.name : '未登录'}
           </Text>
           <Text style={styles.userCompany}>
-            {isLoggedIn ? '山西省太原市山一笑堂大药房连锁有限公司' : '公司名称'}
+            {isLoggedIn && user ? user.company : '公司名称'}
           </Text>
         </View>
       </View>
@@ -165,9 +166,20 @@ export default function ProfileScreen() {
     <SafeAreaView style={styles.container} edges={['left', 'right']}>
       <ScrollView style={styles.scrollView}>
         {renderHeader()}
-        {renderOrders()}
-        {renderTools()}
-        {renderHelpCenter()}
+        {isLoggedIn ? (
+          <>
+            {renderOrders()}
+            {renderTools()}
+            {renderHelpCenter()}
+          </>
+        ) : (
+          <View style={styles.loginPrompt}>
+            <Text style={styles.loginText}>请登录查看更多信息</Text>
+            <TouchableOpacity style={styles.loginButton}>
+              <Text style={styles.loginButtonText}>立即登录</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   )
@@ -313,5 +325,27 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666',
     marginTop: 8,
+  },
+  loginPrompt: {
+    padding: 20,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    marginTop: 10,
+  },
+  loginText: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 15,
+  },
+  loginButton: {
+    backgroundColor: '#FF4D00',
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+    borderRadius: 20,
+  },
+  loginButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 })
