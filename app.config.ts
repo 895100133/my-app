@@ -59,7 +59,7 @@ const config: ExpoConfig = {
       origin: false,
     },
     eas: {
-      projectId: '74a80eb4-ef47-4a62-b59b-d482f3db6ca0',
+      projectId: 'cbb34883-421a-442b-a970-44ac11ac6158',
     },
     // 添加API配置
     apiConfig: envConfig[currentEnv],
